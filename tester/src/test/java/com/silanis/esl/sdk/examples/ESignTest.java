@@ -6,6 +6,8 @@ import com.silanis.esl.sdk.builder.PackageBuilder;
 import com.silanis.esl.sdk.io.Files;
 import org.junit.Test;
 
+import java.io.File;
+
 import static com.silanis.esl.sdk.builder.DocumentBuilder.newDocumentWithName;
 import static com.silanis.esl.sdk.builder.SignatureBuilder.signatureFor;
 import static com.silanis.esl.sdk.builder.SignerBuilder.newSignerWithEmail;
@@ -13,7 +15,7 @@ import static com.silanis.esl.sdk.builder.SignerBuilder.newSignerWithEmail;
 // 提供给策略适配平台的接口样例
 public class ESignTest {
 
-    public static final String API_KEY = "";
+    public static final String API_KEY = "NUd2TzBIdGJOVU1MOlpTV3hXU1dHb0RFNg==";
     public static final String API_URL = "https://sandbox.esignlive.com/api";
     // USE https://apps.esignlive.com/api FOR PRODUCTION
 
@@ -23,24 +25,28 @@ public class ESignTest {
     @Test
     public void signPdf() {
 
+        String root = new File("").getAbsolutePath();
+        String srcPdfPath = root + File.separator + "pdf" + File.separator + "a.pdf";
+
+
         EslClient eslClient = new EslClient( API_KEY, API_URL );
 
         DocumentPackage documentPackage = PackageBuilder.newPackageNamed( "Test Package Java SDK" )
-                .withSigner( newSignerWithEmail( "signers.email@example.com" )
+                .withSigner( newSignerWithEmail("anton.cheung@live.com")
                         .withCustomId( "Signer" )
-                        .withFirstName( "SignerFirstName" )
-                        .withLastName( "SignerLastName" ) )
-                .withSigner( newSignerWithEmail( "your.email@example.com" )
-                        .withFirstName( "YourFirstName" )
-                        .withLastName( "YourLastName" ) )
-                .withDocument( newDocumentWithName( "sampleAgreement" )
-                        .fromFile( "your file path" )
-                        .withSignature( signatureFor( "signers.email@example.com" )
+                        .withFirstName( "anton" )
+                        .withLastName( "cheung" ) )
+                .withSigner( newSignerWithEmail("zhangyantao@huawei.com")
+                        .withFirstName( "yantao" )
+                        .withLastName( "zhang" ) )
+                .withDocument( newDocumentWithName("sampleAgreement")
+                        .fromFile(srcPdfPath)
+                        .withSignature( signatureFor("anton.cheung@live.com")
                                 .onPage( 0 )
-                                .atPosition( 175, 165 ) )
-                        .withSignature( signatureFor( "your.email@example.com")
-                                .onPage( 0 )
-                                .atPosition( 550, 165 )))
+                                .atPosition(175, 165))
+                        .withSignature( signatureFor("zhangyantao@huawei.com")
+                                .onPage(0)
+                                .atPosition(550, 165)))
                 .build();
 
         // Issue the request to the eSignLive server to create the DocumentPackage
