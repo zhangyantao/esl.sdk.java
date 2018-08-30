@@ -19,32 +19,29 @@ public class ESignTest {
     public static final String API_URL = "https://sandbox.esignlive.com/api";
     // USE https://apps.esignlive.com/api FOR PRODUCTION
 
-    public String signRecordID = "";
+    public static String signRecordID = "";
 
     // 发起签署
     @Test
     public void signPdf() {
 
-        String root = new File("").getAbsolutePath();
-        String srcPdfPath = root + File.separator + "pdf" + File.separator + "a.pdf";
-
 
         EslClient eslClient = new EslClient( API_KEY, API_URL );
 
-        DocumentPackage documentPackage = PackageBuilder.newPackageNamed( "Test Package Java SDK" )
+        DocumentPackage documentPackage = PackageBuilder.newPackageNamed( "一般性文件签署" )
                 .withSigner( newSignerWithEmail("anton.cheung@live.com")
                         .withCustomId( "Signer" )
-                        .withFirstName( "anton" )
-                        .withLastName( "cheung" ) )
-                .withSigner( newSignerWithEmail("zhangyantao@huawei.com")
                         .withFirstName( "yantao" )
                         .withLastName( "zhang" ) )
+                .withSigner( newSignerWithEmail("nansong@tsign.cn")
+                        .withFirstName( "松" )
+                        .withLastName( "南" ) )
                 .withDocument( newDocumentWithName("sampleAgreement")
-                        .fromFile(srcPdfPath)
+                        .fromFile("a.pdf")
                         .withSignature( signatureFor("anton.cheung@live.com")
                                 .onPage( 0 )
                                 .atPosition(175, 165))
-                        .withSignature( signatureFor("zhangyantao@huawei.com")
+                        .withSignature( signatureFor("nansong@tsign.cn")
                                 .onPage(0)
                                 .atPosition(550, 165)))
                 .build();
@@ -57,6 +54,9 @@ public class ESignTest {
 
         // 测试使用packageID作为签署记录ID，或者策略适配平台自己分配。
         signRecordID = packageId.getId();
+        System.out.println("signRecord ID " + signRecordID);
+
+        querySignStatus();
 
         return;
 
@@ -68,7 +68,7 @@ public class ESignTest {
         EslClient eslClient = new EslClient( API_KEY, API_URL );
 
         //create a packageId using you packageId string
-        PackageId packageId = new PackageId(signRecordID);
+        PackageId packageId = new PackageId("t-9E78su87hDntQECcxPwATbegQ=");
         //get your package
         DocumentPackage sentPackage = eslClient.getPackage(packageId);
 
@@ -91,7 +91,7 @@ public class ESignTest {
         EslClient eslClient = new EslClient( API_KEY, API_URL );
 
         //create a packageId using you packageId string
-        PackageId packageId = new PackageId(signRecordID);
+        PackageId packageId = new PackageId("t-9E78su87hDntQECcxPwATbegQ=");
 
         // 下载签署结果文件
         byte[] documentZip = eslClient.downloadZippedDocuments(packageId);
